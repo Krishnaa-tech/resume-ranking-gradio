@@ -1,3 +1,5 @@
 google-generativeai
 PyPDF2
 gradio
+fastapi
+docx2txt

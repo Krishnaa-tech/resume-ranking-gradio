@@ -1,4 +1,5 @@
 import os
+import docx2txt
 from PyPDF2 import PdfReader
 import gradio as gr
 
@@ -15,7 +16,18 @@ genai.configure(api_key=API_KEY)
 def open_file(file_path):
     return open(file_path, 'rb')
 
-# Function to extract text from a PDF file
+def extract_text_from_file(file_path):
+    if file_path.endswith('.docx'):
+        return extract_text_from_docx(file_path)
+    elif file_path.endswith('.pdf'):
+        return extract_text_from_pdf(file_path)
+    else:
+        raise ValueError("Unsupported file format")
+
+def extract_text_from_docx(file_path):
+    text = docx2txt.process(file_path)
+    return text
+
 def extract_text_from_pdf(file_path):
     file_obj = open_file(file_path)
     reader = PdfReader(file_obj)
@@ -32,7 +44,7 @@ model = genai.GenerativeModel('gemini-pro')
 def generate_response(resume, job_description):
     # Dictionary to store extracted text with file names
     extracted_texts = {}
-    extracted_text = extract_text_from_pdf(resume.name)
+    extracted_text = extract_text_from_file(resume.name)
     extracted_texts[resume.name] = extracted_text
     
     # Dictionary to store model responses
@@ -58,9 +70,9 @@ After considering these aspects, provide a match percentage indicating how close
 Thank you for your expertise and attention to detail in this evaluation process."""
 
 # Create Gradio Interface
-resume_input = gr.File(label="Upload Resume")
+resume_input = gr.File(label="Upload Resume (PDF or DOCX)")
 job_description_input = gr.Textbox(label="Job Description", type="text")
 interface = gr.Interface(fn=generate_response, inputs=[resume_input, job_description_input], outputs="text", title="Resume Matcher", description="Assess the alignment between a resume and a job description.")
 
 # Launch Gradio Interface
-interface.launch()
+interface.launch(share_server_address="https://127.0.0.1:7860/")
