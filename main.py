@@ -75,4 +75,4 @@ job_description_input = gr.Textbox(label="Job Description", type="text")
 interface = gr.Interface(fn=generate_response, inputs=[resume_input, job_description_input], outputs="text", title="Resume Matcher", description="Assess the alignment between a resume and a job description.")
 
 # Launch Gradio Interface
-interface.launch(share_server_address="https://127.0.0.1:7860/")
+interface.launch()
