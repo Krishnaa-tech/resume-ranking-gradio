@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import gradio as gr
 
-from main import generate_response
+from main import interface
 
 app = FastAPI()
 
